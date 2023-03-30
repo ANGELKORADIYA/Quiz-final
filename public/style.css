@@ -1,0 +1,89 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style-type: none;
+    /* background-color: black;
+    color: white;    
+    font-size: 30px; */
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+a {
+    cursor: pointer;
+}
+
+span {
+    background: #1e00ff;
+    color: white;
+    padding: 12px;
+    margin: 5px;
+    border-radius: 12px;
+    font-size: 30px;
+}
+
+input,
+button {
+    padding: 12px;
+    margin: 19px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+hr {
+    margin: 25px 100px;
+}
+
+/* navbar */
+nav {
+    background-color: black;
+}
+
+nav ul {
+    padding: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+nav ul li a {
+    padding: 20px;
+    margin: 18px;
+    color: aqua;
+    border-radius: 12px;
+}
+
+nav ul li a:hover {
+
+    background-color: white;
+    color: red;
+}
+
+/* box */
+#divof_CO {
+    padding: 12px;
+    margin: 19px;
+    text-align: center;
+
+}
+
+#afterCO,
+#divof_question,
+#afterquestion,
+#confirmation {
+    display: none;
+    padding: 12px;
+    margin: 19px;
+    text-align: center;
+}
+
+#afterquestion p {
+    padding: 12px;
+    margin: 19px;
+}
+
+button:active,
+input:active {
+    background-color: black;
+    color: white;
+}

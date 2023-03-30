@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+            list-style-type: none;
+            /* background-color: black;
+        color: white;    
+        font-size: 30px; */
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        a {
+            cursor: pointer;
+        }
+
+        span {
+            background: #1e00ff;
+            color: white;
+            padding: 12px;
+            margin: 5px;
+            border-radius: 12px;
+            font-size: 30px;
+        }
+
+        input,
+        button {
+            padding: 12px;
+            margin: 19px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        hr {
+            margin: 25px 100px;
+        }
+
+        /* navbar */
+        nav {
+            background-color: black;
+        }
+
+        nav ul {
+            padding: 30px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        nav ul li a {
+            padding: 20px;
+            margin: 18px;
+            color: aqua;
+            border-radius: 12px;
+        }
+
+        nav ul li a:hover {
+
+            background-color: white;
+            color: red;
+        }
+
+        /* box */
+        #divof_CO {
+            padding: 12px;
+            margin: 19px;
+            text-align: center;
+
+        }
+
+        #afterCO,
+        #divof_question,
+        #afterquestion,
+        #confirmation {
+            display: none;
+            padding: 12px;
+            margin: 19px;
+            text-align: center;
+        }
+
+        #afterquestion p {
+            padding: 12px;
+            margin: 19px;
+        }
+
+        button:active,
+        input:active {
+            background-color: black;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- navbar -->
+    <div id="nav">
+        <nav>
+            <ul>
+                <li><a id="a_home">Home</a></li>
+                <li><a id="a_question">Question</a></li>
+                <li><a id="a_aboutme">About Me</a></li>
+            </ul>
+        </nav>
+    </div>
+    About Us
+    </div>
+    <script>
+        const baseUrl = 'http://localhost:8383/';
+
+        let a_home = document.getElementById('a_home');
+        let a_question = document.getElementById('a_question');
+        let a_aboutme = document.getElementById('a_aboutme');
+        let url_id = urlll.split('/')[4]
+        let url_password = urlll.split('/')[5];
+        a_home.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'faculty_index.html/' + url_id + '/' + url_password;
+        })
+        a_aboutme.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'about_me.html';
+        })
+        a_question.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'question.html/' + url_id + '/' + url_password;
+        })
+    </script>
+</body>
+
+</html>

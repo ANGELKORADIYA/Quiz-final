@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOST/FACULTY UI</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+            list-style-type: none;
+            /* background-color: black;
+    color: white;    
+    font-size: 30px; */
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        a {
+            cursor: pointer;
+        }
+
+        span {
+            background: #1e00ff;
+            color: white;
+            padding: 12px;
+            margin: 5px;
+            border-radius: 12px;
+            font-size: 30px;
+        }
+
+        input,
+        button {
+            padding: 12px;
+            margin: 19px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        hr {
+            margin: 25px 100px;
+        }
+
+        /* navbar */
+        nav {
+            background-color: black;
+        }
+
+        nav ul {
+            padding: 30px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        nav ul li a {
+            padding: 20px;
+            margin: 18px;
+            color: aqua;
+            border-radius: 12px;
+        }
+
+        nav ul li a:hover {
+
+            background-color: white;
+            color: red;
+        }
+
+        /* box */
+        #divof_CO {
+            padding: 12px;
+            margin: 19px;
+            text-align: center;
+
+        }
+
+        #afterCO,
+        #divof_question,
+        #afterquestion,
+        #confirmation {
+            display: none;
+            padding: 12px;
+            margin: 19px;
+            text-align: center;
+        }
+
+        #afterquestion p {
+            padding: 12px;
+            margin: 19px;
+        }
+
+        button:active,
+        input:active {
+            background-color: black;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- navbar -->
+    <div id="nav">
+        <nav>
+            <ul>
+                <li><a id="a_home">Home</a></li>
+                <li><a id="a_question">Question</a></li>
+                <li><a id="a_aboutme">About Me</a></li>
+            </ul>
+        </nav>
+    </div>
+
+
+    <!--  -->
+    <div>
+        <main>
+            <!-- input of how many CO requriment -->
+            <div id="divof_CO">
+                How many CO you want ? : -
+                <input type="CO" name="CO" id="CO">
+
+                <!--  -->
+                <input type="submit" value="Submit" id="count">
+            </div>
+
+            <!-- display requried CO count -->
+            <div id="afterCO">
+            </div>
+
+
+
+            <div id="divof_question">
+                How many question you want in CO <span id="print_current_co"></span> ? : -
+                <input type="number" name="question_count" id="question_count">
+                <input type="submit" value="Submit" id="count2">
+            </div>
+    </div>
+    <div id="afterquestion">
+    </div>
+
+
+
+    <!-- Confirmation -->
+    <div id="confirmation">
+        <hr>
+        Please ! Confirm the total CO and each COs total Question : -
+        <button type="reset" value="reset" id="reset">Reset</button>
+        <button type="submit" value="submit" id="final_submit">Submit</button>
+        <!-- DATA GOING TO BACKEND -->
+    </div>
+
+    </main>
+    </div>
+    <!-- <script src="index.js"></script> -->
+    <script>
+        const baseUrl = 'http://localhost:8383/';
+        let urlll = window.location.href;
+        console.log(urlll)
+        if (urlll == 'http://localhost:8383/faculty_index.html') {
+            window.location = baseUrl;
+        }
+
+        //use of get element by ...
+        let CO = document.getElementById("CO");
+        let count = document.getElementById("count");
+        let count2 = document.getElementById("count2");
+        let question_count = document.getElementById("question_count");
+        let divof_CO = document.getElementById("divof_CO");
+        let divof_question = document.getElementById("divof_question");
+        let afterCO = document.getElementById("afterCO");
+        let afterquestion = document.getElementById("afterquestion");
+        let print_current_co = document.getElementById("print_current_co");
+        let confirmation = document.getElementById("confirmation");
+        let a_home = document.getElementById('a_home');
+        let a_question = document.getElementById('a_question');
+        let a_aboutme = document.getElementById('a_aboutme');
+        //variables
+        let num;
+
+        let arr = [];
+        let current_co = 0;
+
+
+        count.addEventListener("click", (e) => {
+            e.preventDefault();
+            num = CO.value;
+            if (num != '') {
+                divof_CO.style.display = "none";
+                afterCO.innerHTML = `Your total CO s are ${num}<hr>`;
+                afterCO.style.display = "block";
+                divof_question.style.display = "block";
+            }
+        })
+
+        current_co++;
+        print_current_co.innerHTML = current_co;
+        count2.addEventListener("click", (e) => {
+            e.preventDefault();
+            arr[current_co - 1] = question_count.value;
+            if (question_count.value != '') {
+                if (current_co >= num) {
+                    divof_question.style.display = "none";
+                    afterquestion.style.display = "block";
+                    confirmation.style.display = "block";
+                    for (let i = 0; i < num; i++) {
+                        afterquestion.innerHTML += `<p>Your total Question in ${i + 1} is ${arr[i]}</p><br>`
+                    }
+                }
+                current_co++;
+                print_current_co.innerHTML = current_co;
+            }
+        })
+
+        let reset = document.getElementById("reset")
+        reset.addEventListener("click", (e) => {
+            e.preventDefault();
+            location.reload();
+        })
+
+        let final_submit = document.getElementById("final_submit");
+        final_submit.addEventListener("click", postInfo)
+
+        async function postInfo(e) {
+            e.preventDefault();
+
+
+            const res = await fetch(baseUrl + 'indexxx',
+                {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify({ parcel: arr })
+
+                });
+
+        }
+        let url_id = urlll.split('/')[4]
+        let url_password = urlll.split('/')[5];
+        a_home.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'faculty_index.html/' + url_id + '/' + url_password;
+        })
+        a_aboutme.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'about_me.html';
+        })
+        a_question.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'question.html/' + url_id + '/' + url_password;
+        })
+
+
+
+    </script>
+</body>
+
+</html>

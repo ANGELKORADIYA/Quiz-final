@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answer</title>
+    <!-- <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="show_answer.css"> -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+            list-style-type: none;
+            /* background-color: black;
+    color: white;    
+    font-size: 30px; */
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        a {
+            cursor: pointer;
+        }
+
+        span {
+            background: #1e00ff;
+            color: white;
+            padding: 12px;
+            margin: 5px;
+            border-radius: 12px;
+            font-size: 30px;
+        }
+
+        input,
+        button {
+            padding: 12px;
+            margin: 19px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        hr {
+            margin: 25px 100px;
+        }
+
+        /* navbar */
+        nav {
+            background-color: black;
+        }
+
+        nav ul {
+            padding: 30px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        nav ul li a {
+            padding: 20px;
+            margin: 18px;
+            color: aqua;
+            border-radius: 12px;
+        }
+
+        nav ul li a:hover {
+
+            background-color: white;
+            color: red;
+        }
+
+        /* box */
+        #divof_CO {
+            padding: 12px;
+            margin: 19px;
+            text-align: center;
+
+        }
+
+        #afterCO,
+        #divof_question,
+        #afterquestion,
+        #confirmation {
+            display: none;
+            padding: 12px;
+            margin: 19px;
+            text-align: center;
+        }
+
+        #afterquestion p {
+            padding: 12px;
+            margin: 19px;
+        }
+
+        button:active,
+        input:active {
+            background-color: black;
+            color: white;
+        }
+
+        /*  */
+        #root {
+            display: flex;
+            flex-direction: column;
+            margin: 20px;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+
+        }
+
+        .elements,
+        #total {
+
+            padding: 40px;
+            border: 3px solid red;
+            border-radius: 12px;
+        }
+
+        #total {
+            font-size: 30px;
+        }
+
+        #total span {
+            background: red;
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+        a {
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="nav">
+        <nav>
+            <ul>
+                <li><a id="a_quiz">Quiz</a></li>
+                <li><a id="a_marks">Your Answer</a></li>
+                <li><a id="a_aboutme">About Me</a></li>
+            </ul>
+        </nav>
+    </div>
+
+
+    <div id="main">
+        <div id="root"></div>
+    </div>
+
+
+
+
+
+    <script>
+        let urlll = window.location.href;
+        const baseUrl = 'http://localhost:8383/';
+        console.log(urlll)
+        let url_id = urlll.split('/')[4]
+        let url_password = urlll.split('/')[5];
+        if (urlll == 'http://localhost:8383/show_answer.html') {
+            window.location = baseUrl;
+        }
+        let answer = 0;
+        let root = document.getElementById("root");
+
+        let arr;
+        async function onll() {
+
+            const res = await fetch(baseUrl + 'student_answer/' + url_id + '/' + url_password,
+                {
+                    method: 'GET'
+                });
+
+            arr = await res.json();
+            console.log(arr)
+            // us();
+            for (let i = 0; i < arr.length; i++) {
+                root.innerHTML += `<div class='elements'>Your Marks in CO - ${i + 1} is <span>` + arr[i] + `</span></div><br>`;
+                answer += arr[i];
+            }
+            root.innerHTML += `<div id="total">Your total mark is :-<span>${answer}</span></div?`;
+        }
+        onll();
+        let a_quiz = document.getElementById('a_quiz');
+        let a_marks = document.getElementById('a_marks');
+        let a_aboutme = document.getElementById('a_aboutme');
+        
+        a_quiz.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('you not going back')
+            // window.location = baseUrl + '.html/' + url_id + '/' + url_password;
+        })
+        a_aboutme.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'about_me.html';
+        })
+        a_marks.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'show_answer.html/' + url_id + '/' + url_password;
+        })
+    </script>
+</body>
+
+</html>

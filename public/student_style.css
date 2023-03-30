@@ -1,0 +1,67 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style-type: none;
+    /* background-color: black;
+    color: white;    
+    font-size: 30px; */
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+button:active,input:active{
+    background-color: black;
+    color: white;
+}
+hr{
+    margin: 25px 100px;
+}
+input,button{
+    padding: 12px;
+    margin: 19px;
+    border-radius: 4px;
+
+}
+/* navbar */
+nav{
+    background-color: black;
+}
+nav ul{
+    padding: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+nav ul li a{
+    padding: 20px;
+    margin: 18px;
+    color: aqua;
+    border-radius: 12px;
+}
+nav ul li a:hover{
+
+    background-color: white;
+    color: red;
+}
+
+
+
+
+.COindicator{
+    margin:20px;
+    font-size: 30px;
+    background-color:blue;
+    color: white;
+    padding: 12px;
+    border-radius: 12px ;
+}
+.loadquestion{
+    border-radius: 7px ;
+    margin:30px;
+    background-color: orange;
+    padding: 10px;
+}
+.options{
+    border-radius: 50px ;
+    margin: 12px 40px ;
+    background-color: rgb(176, 176, 169);
+}
