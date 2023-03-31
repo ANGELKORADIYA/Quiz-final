@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responces of Your Quiz | AHAVA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+            list-style-type: none;
+
+            /* background-color: black;
+    color: white;    
+    font-size: 30px; */
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        body div {
+            color: white;
+        }
+
+        html,
+        body {
+            background: -webkit-linear-gradient(left, rgb(204, 0, 255), #3d36c7);
+
+        }
+
+        a {
+            cursor: pointer;
+        }
+
+        span {
+            background: #1e00ff;
+            color: white;
+            padding: 12px;
+            margin: 5px;
+            border-radius: 12px;
+            font-size: 30px;
+        }
+
+        input,
+        button {
+            padding: 12px;
+            margin: 19px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        hr {
+            margin: 25px 100px;
+        }
+
+        /* navbar */
+        nav {
+            background-color: black;
+        }
+
+        nav ul {
+            padding: 30px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        nav ul li a {
+            padding: 20px;
+            margin: 18px;
+            color: aqua;
+            border-radius: 12px;
+        }
+
+        nav ul li a:hover {
+
+            background-color: white;
+            color: red;
+        }
+
+        /* box */
+        #divof_CO {
+            padding: 12px;
+            margin: 19px;
+            text-align: center;
+            /* color: white; */
+        }
+
+        #afterCO,
+        #divof_question,
+        #afterquestion,
+        #confirmation {
+            display: none;
+            padding: 12px;
+            margin: 19px;
+            text-align: center;
+        }
+
+        #afterquestion p {
+            padding: 12px;
+            margin: 19px;
+        }
+
+        button:active,
+        input:active {
+            background-color: black;
+            color: white;
+        }
+/*  */
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 96%;
+  margin: 0 auto;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin: 2%;
+}
+
+td,
+th {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+}
+
+th {
+  background-color: #4caf50;
+  color: white;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+thead tr {
+  background-color: #4caf50;
+  color: white;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tbody tr:hover {
+  background-color: #ddd;
+}
+
+tfoot tr {
+  background-color: #f2f2f2;
+}
+
+tfoot td {
+  font-weight: bold;
+}
+
+
+
+
+    </style>
+</head>
+
+<body>
+    <div id="nav">
+        <nav>
+            <ul>
+                <li><a id="a_home">Home</a></li>
+                <li><a id="a_question">Question</a></li>
+                <li><a id="a_responses">Responses</a></li>
+                <li><a id="a_aboutme">About Me</a></li>
+            </ul>
+        </nav>
+    </div>
+    <table id="myTable"></table>
+    <button onclick="exportTableToExcel('myTable')">Download Excel</button>
+    <script>
+        const baseUrl = 'http://localhost:8383/';
+        let urlll = window.location.href;
+        console.log(urlll)
+        let url_id = urlll.split('/')[4]
+        let name,arr;
+        const myTable=document.getElementById('myTable');
+        let url_password = urlll.split('/')[5];
+        if (urlll == 'http://localhost:8383/responces.html') {
+            window.location = baseUrl;
+        }
+        
+        async function onll() {
+            
+            const res = await fetch(baseUrl + 'responces/' + url_id + '/' + url_password,
+            {
+                    method: 'GET'
+                });
+                
+                arr = (await res.json());
+                arr=JSON.parse(arr);
+                name=arr.name;
+                arr=arr.arrrr
+                console.log(arr) 
+                us();
+            }
+            onll()
+            
+            
+
+            
+            
+            function us() {
+                // myTable.innerHTML=`<tr><td>gnlangan</td><td>gnlangan</td></tr><tr><td>gnlangan</td></tr><tr><td>gnlangan</td></tr><tr><td>gnlangan</td></tr>`    
+                let coloum_count = arr[0].answer.length
+                let row_count = arr.length
+                console.log(coloum_count)
+                myTable.innerHTML='<tbody id="tbodyy"><tr id="header"><th id="loginn">login_id</th><th id="addhere"></th></tr>'    
+                let addhere =document.getElementById('addhere')
+                let loginn =document.getElementById('loginn')
+                let tbodyy =document.getElementById('tbodyy')
+                let header =document.getElementById('header')
+                    for (let i = 0; i < coloum_count; i++) {
+                        if(i==0){
+                            header.innerHTML=`<tr><th>login_id</th>`
+                        }
+                        header.innerHTML+=`<th>CO-${i+1}</th>`;
+                        if(i==coloum_count-1){
+                            header.innerHTML+=`<th>Total</th></tr>`;
+
+                        }
+                    }
+                for (let i = 0; i < row_count; i++) {
+                    let addtext=new String;
+                    if(i==0){
+                        addtext+='<tr>'
+                    }
+                    addtext+=`<td>${arr[i].login_id}</td>`
+                    for (let j = 0; j < coloum_count; j++) {
+                        addtext+=`<td>${arr[i].answer[j]}</td>`;
+                        tbodyy.appendChild
+                    }
+                    let ams=0;
+                    // for (let j = 0; j < coloum_count; j++) {
+                    //     ams+=arrarr[i].answer[j];
+                    // }
+
+                    // addtext+=`<td>${aws}</td>`;
+                    
+                    for (let j = 0; j < coloum_count; j++) {
+                        ams+=arr[i].answer[j];
+                    }
+
+                    addtext+=`<td>${ams}</td>`;
+                    if(i==row_count-1){
+                        addtext+='</tr>'
+                    }
+                    myTable.innerHTML+=addtext
+                }
+                
+                let addtext=new String;
+                for (let i = 0; i < coloum_count; i++) {
+                    if(i==0){
+                        addtext+=`<tr><th>Per Student</th>`
+                    }
+                    let addhere=0;
+                    for(let j=0;j<row_count;j++){
+                    addhere+=arr[j].answer[i]}
+                    addtext+=`<th>${addhere}</th>`;
+
+
+
+                    if(i==coloum_count-1){
+                        let totalll=0;
+                            for (let x = 0; x< coloum_count; x++) {
+                    for(let j=0;j<row_count;j++){
+                        totalll+=arr[j].answer[x]
+                    }}
+                        addtext+=`<th>${totalll}</th></tr>`;
+
+                    }
+                }
+                myTable.innerHTML+=addtext
+
+
+        a_home.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'faculty_index.html/' + url_id + '/' + url_password;
+        })
+        a_aboutme.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'about_me.html';
+        })
+        a_question.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'question.html/' + url_id + '/' + url_password;
+        })
+        a_responses.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'responces.html/' + url_id + '/' + url_password;
+        })
+        function downloadExcel(filename, data) {
+  var blob = new Blob([data], { type: 'application/vnd.ms-excel' });
+  var element = document.createElement('a');
+  element.href = window.URL.createObjectURL(blob);
+  element.download = filename;
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+
+}
+function downloadExcel(filename, data) {
+  var blob = new Blob([data], { type: 'application/vnd.ms-excel' });
+  var element = document.createElement('a');
+  element.href = window.URL.createObjectURL(blob);
+  element.download = filename;
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+
+function exportTableToExcel(tableID, filename = '') {
+  var downloadFilename = filename || 'table.xls';
+  var table = document.getElementById(tableID);
+  var rows = table.rows;
+  var csvData = [];
+  
+  for (var i = 0; i < rows.length; i++) {
+    var rowData = [];
+    var cells = rows[i].cells;
+    
+    for (var j = 0; j < cells.length; j++) {
+      rowData.push(cells[j].innerText);
+    }
+    
+    csvData.push(rowData.join('\t'));
+  }
+  
+  var csvString = csvData.join('\n');
+  
+  downloadExcel(downloadFilename, csvString);
+}
+
+    </script>
+</body>
+
+</html>

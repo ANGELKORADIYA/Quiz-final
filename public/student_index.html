@@ -213,6 +213,8 @@
         let a_aboutme = document.getElementById('a_aboutme');
         let url_id = urlll.split('/')[4]
             let url_password = urlll.split('/')[5]
+            // let idd = urlll.split('/')[6]
+            
         a_quiz.addEventListener('click', (e) => {
                 e.preventDefault();
                 window.location = baseUrl + 'student_index.html/' + url_id + '/' + url_password;
@@ -312,7 +314,7 @@
                         headers: {
                             "Content-Type": 'application/json'
                         },
-                        body: JSON.stringify({ parcel: data, parcel_name: nameee })
+                        body: JSON.stringify({ parcel: data, parcel_name: nameee, })
 
                     });
             }

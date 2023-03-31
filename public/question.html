@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Question</title>
+    <title>Question | AHAVA</title>
     <!-- <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="style2.css"> -->
     <style>
@@ -235,6 +235,8 @@
             <ul>
                 <li><a id="a_home">Home</a></li>
                 <li><a id="a_question">Question</a></li>
+                <li><a id="a_responses">Responses</a></li>
+
                 <li><a id="a_aboutme">About Me</a></li>
             </ul>
         </nav>
@@ -251,8 +253,8 @@
         <hr>
         Please ! Checking total Question : -
         <button type="reset" value="reset" id="reset">Reset</button>
-        <input type="submit" value="Check" id="final_submit">
-        <input type="submit" value="submit" id="submit">
+        <input type="submit" value="Submit" id="final_submit">
+        <!-- <input type="submit" value="submit" id="submit"> -->
         <!-- DATA GOING TO BACKEND -->
     </div>
     <div id="discliamer"></div>
@@ -272,12 +274,14 @@
             window.location = baseUrl;
         }
 
+        let url_id = urlll.split('/')[4];
+        let url_password = urlll.split('/')[5];
 
 
         let arr;
         async function onll() {
 
-            const res = await fetch(baseUrl + 'info',
+            const res = await fetch(baseUrl + 'info/' + url_id + '/' + url_password,
                 {
                     method: 'GET'
                 });
@@ -294,20 +298,22 @@
         // let arr=[2,2,2];
 
 
-        let flag = 0, flag2 = 0;
+        let flag = 0, flag2 = 0, flag3 = 0;
         let counter = new Array()
         let data = new Array;
         let a;
         let answer = new Array;
         let discliamer;
         let final_submit = document.getElementById("final_submit");
-        let submit = document.getElementById("submit");
+        // let submit = document.getElementById("submit");
         let loadquestion = document.getElementById("loadquestion")
         let confirmation2 = document.getElementById("confirmation2")
         let addoption;
         let a_home = document.getElementById('a_home');
         let a_question = document.getElementById('a_question');
         let a_aboutme = document.getElementById('a_aboutme');
+        let a_responses = document.getElementById('a_responses');
+
         function us() {
             for (let j = 0; j < arr.length; j++) {
                 loadquestion.innerHTML += `<div class="COindicator">for CO-${j + 1}</div>`
@@ -368,7 +374,7 @@
                             if (z[x] != null) {
                                 if (z[x].checked) {
                                     answer[j][i] = document.getElementById(`option-${j + 1}-${i + 1}-${x + 1}`).value;
-
+                                    console.log(answer)
                                 }
                             }
 
@@ -378,6 +384,7 @@
                 }
                 flag = 0;
                 flag2 = 0;
+                flag3 = 0;
                 for (let j = 0; j < arr.length; j++) {
                     for (let i = 0; i < arr[j]; i++) {
                         // if(answer[j][i]){
@@ -387,20 +394,38 @@
 
                         }
                         // }
-                        if (counter[j][i]) {
-                            for (let x = 0; x < counter[j][i]; x++) {
-                                if (data[j][i][x] == '') {
-                                    flag++;
-                                    console.log("please enter in thid question")
+                        // if (counter[j][i]) {
+                        //     for (let x = 0; x < counter[j][i]; x++) {
+                        //         if (data[j][i][x] == '') {
+                        //             flag++;
+                        //             console.log("please enter in thid question")
 
-                                }
-                                if (answer[j][i] == undefined) {
-                                    flag2++;
-                                }
-                            }
+                        //         }
+                        //         if (answer[j][i] == undefined) {
+                        //             flag2++;
+                        //         }
+                        //     }
+                        // }
+                        // else {
+                        //     console.log("please add one option to question")
+                        // }
+
+                        if (counter[j][i] == '0' || counter[j][i] == '1') {
+                            flag2++;
                         }
                         else {
-                            console.log("please add one option to question")
+                            for (let x = 0; x < counter[j][i]; x++) {
+                                if (x != 0) {
+                                    if (data[j][i][x] == '') {
+                                        flag2++;
+                                    }
+                                }
+                            }
+
+
+                            if (answer[j][i] == '' || answer[j][i] == undefined) {
+                                flag3++;
+                            }
                         }
 
 
@@ -408,8 +433,18 @@
                 }
                 console.log(flag)
                 console.log(flag2)
-                if (flag == 0 && flag2 == 0) {
-                    submit.style.display = 'inline'
+                console.log(flag3)
+                if (flag == 0 && flag2 == 0 && flag3 == 0) {
+                    // submit.style.display = 'inline'
+                    const res = await fetch(baseUrl + 'questionsss',
+                        {
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": 'application/json'
+                            },
+                            body: JSON.stringify({ parcel: data, parcel_answer: answer, parcel_id: url_id, parcel_password: url_password })
+
+                        });
                 }
 
 
@@ -418,17 +453,17 @@
 
 
             });
-            submit.addEventListener("click", async () => {
-                const res = await fetch(baseUrl + 'questionsss',
-                    {
-                        method: 'POST',
-                        headers: {
-                            "Content-Type": 'application/json'
-                        },
-                        body: JSON.stringify({ parcel: data, parcel_answer: answer })
+            // submit.addEventListener("click", async () => {
+            //     const res = await fetch(baseUrl + 'questionsss',
+            //         {
+            //             method: 'POST',
+            //             headers: {
+            //                 "Content-Type": 'application/json'
+            //             },
+            //             body: JSON.stringify({ parcel: data, parcel_answer: answer })
 
-                    });
-            })
+            //         });
+            // })
 
 
 
@@ -458,19 +493,22 @@
             }
             let url_id = urlll.split('/')[4]
             let url_password = urlll.split('/')[5]
-                a_home.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.location = baseUrl + 'faculty_index.html/' + url_id + '/' + url_password;
-                })
-                a_aboutme.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.location = baseUrl + 'about_me.html';
-                })
-                a_question.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.location = baseUrl + 'question.html/' + url_id + '/' + url_password;
-                })
-
+            a_home.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location = baseUrl + 'faculty_index.html/' + url_id + '/' + url_password;
+            })
+            a_aboutme.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location = baseUrl + 'about_me.html';
+            })
+            a_question.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location = baseUrl + 'question.html/' + url_id + '/' + url_password;
+            })
+            a_responses.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location = baseUrl + 'responces.html/' + url_id + '/' + url_password;
+            })
 
         }
 

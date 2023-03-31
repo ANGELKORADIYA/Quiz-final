@@ -14,6 +14,7 @@ async function main() {
 
     kittySchema = new mongoose.Schema({
         name: String,
+        id:String, 
         arrayy: Array
     });
     Kitten = mongoose.model('Kitten', kittySchema);
@@ -21,6 +22,7 @@ async function main() {
 
     questionSchema = new mongoose.Schema({
         name: String,
+        id:String,
         arrayy: Array
     });
     questionmodel = mongoose.model('questions', questionSchema);
@@ -31,6 +33,7 @@ async function main() {
         login_id: String,
         login_password: String,
         page: String,
+        id:String,
         answer: Array
     });
     loginmodel = mongoose.model('loginns', loginSchema);
@@ -38,36 +41,58 @@ async function main() {
 
     answerSchema = new mongoose.Schema({
         name: String,
+        id:String,
         answer: Array
     });
     answermodel = mongoose.model('real_answer', answerSchema);
     // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }
-async function kittenupdate(parcel) {
+async function kittenupdate(parcel,parcel_id,parcel_password) {
+    let auth = await authenticate(parcel_id,parcel_password)
 
+    if(auth=='faculty'){
     let newvalues = { $set: { arrayy: parcel } };
-    let infoo = await Kitten.updateOne({ name: "info" }, newvalues);
+    let infoo = await Kitten.updateOne({ name: "info",id:parcel_id }, newvalues);
+    if(infoo.matchedCount==0){
+        // let slience = new questionmodel({name:'questions'})
+    let silence = new Kitten({ name: 'info',arrayy:parcel,id:parcel_id});
+    await silence.save();
+    }
     await infoo
+
+
 }
-async function kitteninfo() {
-    let infoo = await Kitten.findOne({ name: "info" }).exec();
+}
+async function kitteninfo(parcel) {
+    let infoo = await Kitten.findOne({ name: "info",id:parcel}).exec();
     return JSON.stringify(infoo.arrayy);
 }
 
 
-async function questionupdate(parcel) {
+async function questionupdate(parcel,parcel_id,parcel_password) {
+    let auth = await authenticate(parcel_id,parcel_password)
+    if(auth=='faculty'){
     let newvalues = { $set: { arrayy: parcel } };
-    let infoo = await questionmodel.updateOne({ name: "question" }, newvalues);
+    let infoo = await questionmodel.updateOne({ name: "question",id:parcel_id }, newvalues);
+    if(infoo.matchedCount==0){
+        // let slience = new questionmodel({name:'questions'})
+    let silence = new questionmodel({ name: 'question',arrayy:parcel,id:parcel_id});
+    await silence.save();
+
+    // console.log(infoo)
+}
     await infoo;
 }
-async function questioninfo() {
-    let infoo = await questionmodel.findOne({ name: "question" }).exec();
+}
+async function questioninfo(parcel_id,parcel_password) {
+    let idd=await getidd(parcel_id,parcel_password)
+    let infoo = await questionmodel.findOne({ name: "question",id:JSON.parse(idd) }).exec();
     return JSON.stringify(infoo.arrayy);
 }
-async function answerupdateofstudent(parcel, parcel_id, parcel_password) {
+async function answerupdateofstudent(parcel, parcel_id, parcel_password,idd) {
     let newvalues = { $set: { answer: parcel } };
-    let infoo = await loginmodel.updateOne({ name: "login", login_id: parcel_id, login_password: parcel_password }, newvalues)
-    console.log(await infoo)
+    let infoo = await loginmodel.updateOne({ name: "login", login_id: parcel_id, login_password: parcel_password,id:JSON.parse(idd) }, newvalues)
+    await infoo
 }
 
 async function authenticate(parcel, parcel_password) {
@@ -88,18 +113,55 @@ async function answerinfofstudent(parcel, parcel_password) {
         }
     }
 }
-async function answerupdate(parcel) {
-    let newvalues = { $set: { answer: parcel } };
-    let infoo = await answermodel.updateOne({ name: "answer" }, newvalues)
+async function responsesss(parcel, parcel_password) {
+    let auth = await authenticate(parcel,parcel_password);
+    let infoo;
+    if(auth=='faculty'){
+    infoo = await loginmodel.find({ name: "login", id:parcel,page:'student'}).exec();}
+    for(let i=0;i<infoo.length;i++){}
+    infoo=infoo.map(({ login_id,answer})=>{ 
 
-    await infoo;
+        return { login_id,answer};
+      
+      });
+    return infoo
+    // for (let i = 0; i < infoo.length; i++) {
+    //     if (infoo[i].login_id == parcel && infoo[i].login_password == parcel_password) {
+    //         return infoo[i].answer;
+
+    //     }
+    // }
+    
+}
+async function answerupdate(parcel_answer,parcel_id,parcel_password) {
+    let auth = await authenticate(parcel_id,parcel_password);
+    if(auth=='faculty'){
+    let newvalues = { $set: { answer: parcel_answer } };
+    let infoo = await answermodel.updateOne({ name: "answer" ,id:parcel_id}, newvalues)
+    if(infoo.matchedCount==0){
+    let silence = new answermodel({ name: 'answer',answer:parcel_answer,id:parcel_id});
+    await silence.save();
+
+    // console.log(infoo);
+}
+await infoo;
+
+}
 }
 async function answerinfo(parcel) {
-    let infoo = await answermodel.findOne({ name: "answer" }).exec()
-    return infoo
+    // console.log(JSON.parse(parcel))
+    let infoo = await answermodel.findOne({ name: "answer",id:JSON.parse(parcel) }).exec()
+    // console.log(infoo)
+    return infoo.answer;
 }
 
+async function getidd(parcel_id,parcel_password){
+    let infoo = await loginmodel.findOne({ name: "login",login_id: parcel_id,login_password:parcel_password }).exec();
 
+    // console.log(infoo.id)
+    return JSON.stringify(infoo.id);
+    
+}
 
 
 
@@ -133,8 +195,8 @@ app.get('//faculty_index.html', (req, res) => {
     res.redirect(baseUrl + '/index.html')
 })
 app.get('/index.html/:id/:password', async (req, res) => {
-    console.log(req.params)
-    console.log(req.params.id)
+    // console.log(req.params)
+    // console.log(req.params.id)
     let v = await authenticate(req.params.id, req.params.password);
     if (v == 'faculty') {
         res.redirect(baseUrl + '/faculty_index.html')
@@ -142,7 +204,7 @@ app.get('/index.html/:id/:password', async (req, res) => {
 
 })
 app.get('/student_index.html/:id/:password', async (req, res) => {
-    console.log(req.params)
+    // console.log(req.params)
     let v = await authenticate(req.params.id, req.params.password);
     if (v == 'faculty') {
         res.redirect(baseUrl + '/faculty_index.html')
@@ -157,7 +219,7 @@ app.get('/student_index.html/:id/:password', async (req, res) => {
     }
 })
 app.get('/faculty_index.html/:id/:password', async (req, res) => {
-    console.log(req.params)
+    // console.log(req.params)
     let v = await authenticate(req.params.id, req.params.password);
     if (v == 'faculty') {
         res.sendFile(path.join(__dirname, "public/faculty_index.html"));
@@ -167,8 +229,19 @@ app.get('/faculty_index.html/:id/:password', async (req, res) => {
     else {
     }
 })
+app.get('/responces.html/:id/:password', async (req, res) => {
+    // console.log(req.params)
+    let v = await authenticate(req.params.id, req.params.password);
+    if (v == 'faculty') {
+        res.sendFile(path.join(__dirname, "public/responces.html"));
+        // res.redirect(baseUrl + '/faculty_index.html')
+    }
+
+    else {
+    }
+})
 app.get('/show_answer.html/:id/:password', async (req, res) => {
-    console.log(req.params)
+    // console.log(req.params)
     let v = await authenticate(req.params.id, req.params.password);
     if (v == 'student') {
         res.sendFile(path.join(__dirname, "public/show_answer.html"));
@@ -179,7 +252,7 @@ app.get('/show_answer.html/:id/:password', async (req, res) => {
     }
 })
 app.get('/question.html/:id/:password', async (req, res) => {
-    console.log(req.params)
+    // console.log(req.params)
     let v = await authenticate(req.params.id, req.params.password);
     if (v == 'faculty') {
         res.sendFile(path.join(__dirname, "public/question.html"));
@@ -190,7 +263,7 @@ app.get('/question.html/:id/:password', async (req, res) => {
     }
 })
 app.get('/faculty_index.html/:id/:password', async (req, res) => {
-    console.log(req.params)
+    // console.log(req.params)
     let v = await authenticate(req.params.id, req.params.password);
     if (v == 'faculty') {
         res.sendFile(path.join(__dirname, "public/faculty_index.html"));
@@ -202,18 +275,26 @@ app.get('/faculty_index.html/:id/:password', async (req, res) => {
 })
 
 app.get('/faculty_index.html', (req, res) => {
-    console.log("not you directly acces")
+    // console.log("not you directly acces")
 })
 
 
 
 
-app.get('/info', async (req, res) => {
-    res.status(200).json(await kitteninfo());
+app.get('/info/:id/:password', async (req, res) => {
+    let auth = await authenticate(req.params.id,req.params.password)
+    // console.log(req.params)
+    if(auth=='faculty'){
+        // idd = await getidd(req.params.id,req.params.password);
+        // console.log(idd)
+        
+        res.status(200).json(await kitteninfo(req.params.id));
+    }
 })
+//student view
 app.get('/questions/:id/:password', async (req, res) => {
     let auth = await authenticate(req.params.id, req.params.password);
-    let writee = await questioninfo()
+    let writee = await questioninfo(req.params.id,req.params.password);
     if (auth == 'student') {
         res.status(200).json(`{"arrrr":${writee},"name":["${req.params.id}",${req.params.password}]}`);
     }
@@ -221,13 +302,23 @@ app.get('/questions/:id/:password', async (req, res) => {
         res.status(400);
     }
 })
-
+app.get('/responces/:id/:password', async (req, res) => {
+    let auth = await authenticate(req.params.id, req.params.password);
+    if (auth == 'faculty') {
+        let writee = await responsesss(req.params.id,req.params.password);
+        res.status(200).json(`{"arrrr":${JSON.stringify(writee)},"name":["${req.params.id}",${req.params.password}]}`);
+    }
+    else {
+        res.status(400);
+    }
+})
+//end
 
 
 app.get('/student_answer/:id/:password', async (req, res) => {
-    console.log("object")
+    // console.log("object")
     let v=await answerinfofstudent(req.params.id, req.params.password)
-    console.log(v)
+    // console.log(v)
     res.status(200).json(v);
 })
 // app.
@@ -255,8 +346,8 @@ app.post('/login', async (req, res) => {
 
 })
 app.post('/indexxx', async (req, res) => {
-    const { parcel } = req.body;
-    await kittenupdate(parcel);
+    const { parcel,parcel_id,parcel_password } = req.body;
+    await kittenupdate(parcel,parcel_id,parcel_password);
     if (!parcel) {
         return res.status(400).send({ status: 'failed' })
     }
@@ -268,10 +359,13 @@ app.post('/answerrr', async (req, res) => {
         return res.status(400).send({ status: 'failed' })
     }
     let v = await authenticate(parcel_name[0], parcel_name[1])
-    console.log(v)
+    let idd;
     if (v == 'student') {
-        ANSWERRR = await answerinfo();
-        ANSWERRR = ANSWERRR.answer;
+        idd=await getidd(parcel_name[0],parcel_name[1]);
+        ANSWERRR = await answerinfo(idd);
+        // console.log(ANSWERRR)
+        // ANSWERRR = ANSWERRR.answer;
+        // console.log(ANSWERRR)
         for (let j = 0; j < ANSWERRR.length; j++) {
             count[j] = 0;
             for (let i = 0; i < ANSWERRR[j].length; i++) {
@@ -281,18 +375,17 @@ app.post('/answerrr', async (req, res) => {
             }
         }
     }
-    await answerupdateofstudent(count, parcel_name[0], parcel_name[1]);
+    // console.log(count)
+    await answerupdateofstudent(count, parcel_name[0], parcel_name[1],idd);
 
     res.status(200).send({ status: 'recieved' })
 })
 app.post('/questionsss', async (req, res) => {
-    const { parcel, parcel_answer } = req.body;
-    CO_QUESTION = parcel;
-    CO_ANSWER = parcel_answer;
+    const { parcel, parcel_answer,parcel_id,parcel_password } = req.body;
+    // console.log(req.body)
 
-
-    await questionupdate(parcel);
-    await answerupdate(parcel_answer);
+    await questionupdate(parcel,parcel_id,parcel_password);
+    await answerupdate(parcel_answer,parcel_id,parcel_password);
 
 
 
@@ -306,9 +399,8 @@ app.post('/questionsss', async (req, res) => {
 
 
 app.listen(port, () => {
-
-
     console.log(`server started on port ${port}`)
 
 })
 
+  
