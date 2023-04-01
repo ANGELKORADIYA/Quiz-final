@@ -220,17 +220,17 @@
           </form>
           <form action="#" class="signup">
             <div class="field">
-              <input type="text" placeholder="Email Address" required>
+              <input type="text" placeholder="Email Address" required id="sign_up_email" required>
             </div>
             <div class="field">
-              <input type="password" placeholder="Password" required>
+              <input type="password" placeholder="Password" id="sign_up_password" required>
             </div>
             <div class="field">
               <input type="password" placeholder="Confirm password" required>
             </div>
             <div class="field btn">
               <div class="btn-layer"></div>
-              <input type="submit" value="Signup">
+              <input type="submit" value="Signup" id="signup">
             </div>
           </form>
         </div>
@@ -259,7 +259,25 @@
         return false;
       });
       let submit = document.getElementById("submit")
+      let sign_up_email = document.getElementById("sign_up_email")
+      let sign_up_password = document.getElementById("sign_up_password")
+      const signup = document.getElementById('signup');
+      signup.addEventListener('click',uppp)
       
+      async function uppp(e){
+        e.preventDefault();
+        const res = await fetch(baseUrl + 'signup',
+                    {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": 'application/json'
+                        },
+                        body: JSON.stringify({ parcel: sign_up_email.value, parcel_name: sign_up_password.value })
+
+                    }); 
+      }
+
+
       submit.addEventListener("click",async(e)=>{
         e.preventDefault
         email = document.querySelector("input[type='text']").value
@@ -289,6 +307,13 @@
         else if(res.status==400){
           location.reload();
 
+        }
+        else if(res.status==800){
+          // console.log("object")
+          window.location.replace(baseUrl+"faceauth.html")
+        }
+        else{
+          alert('user not found')
         }
       })
       

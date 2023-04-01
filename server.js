@@ -335,12 +335,17 @@ app.post('/login', async (req, res) => {
         res.status(200).send({ status: 'recieved' })
     }
     else if (nexturl == 'student') {
-        // res.render('http://localhost:8383/student_index.html' )
-        console.log("student")
-        res.status(222).send({ status: 'recieved' })
+        if(parcel=='adarsh'){
+            console.log("student")
+            // res.render('http://localhost:8383/public/faceauth.html' )
+            res.status(800).send({status:'recieved'})
+        }
+        else{
+        // console.log("student")
+        res.status(222).send({ status: 'recieved' })}
     }
     else {
-        console.log("no found")
+        // console.log("no found")
         res.status(400).send({ status: 'recieved' })
     }
 
@@ -351,6 +356,15 @@ app.post('/indexxx', async (req, res) => {
     if (!parcel) {
         return res.status(400).send({ status: 'failed' })
     }
+    res.status(200).send({ status: 'recieved' })
+})
+app.post('/signup', async (req, res) => {
+    const { parcel,parcel_name } = req.body;
+    // console.log(parcel_id)
+    console.log(parcel)
+    let a = new loginmodel({login_id:parcel,login_password:parcel_name});
+    await a.save()
+    
     res.status(200).send({ status: 'recieved' })
 })
 app.post('/answerrr', async (req, res) => {

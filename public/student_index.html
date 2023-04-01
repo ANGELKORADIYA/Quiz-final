@@ -95,7 +95,9 @@
             background-color: black;
             color: white;
         }
-
+        .loadquestion,.COindicator{
+            display: none;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -156,7 +158,7 @@
         .COindicator {
             margin: 20px;
             font-size: 30px;
-            background-color: blue;
+            background-color: rgb(66, 66, 236);
             color: white;
             padding: 12px;
             border-radius: 12px;
@@ -165,14 +167,24 @@
         .loadquestion {
             border-radius: 7px;
             margin: 30px;
-            background-color: orange;
+            background-color: rgb(102, 97, 97);
+            color: white;
             padding: 10px;
         }
 
         .options {
             border-radius: 50px;
             margin: 12px 40px;
-            background-color: rgb(176, 176, 169);
+            background-color: white;
+            color:black
+        }
+
+        #timer {
+            position: absolute;
+            color: white;
+            right: 30px;
+            top: 27px;
+            font-size: 20px;
         }
     </style>
 </head>
@@ -188,11 +200,12 @@
             </ul>
         </nav>
     </div>
-
+    <div id="timer"></div>
 
     <div id="root">
 
     </div>
+    <button id="next">Next</button>
     <div id="confirmation">
         <hr>
         Please ! Confirm the total CO and each COs total Question : -
@@ -204,29 +217,30 @@
     <script>
         let urlll = window.location.href;
         const baseUrl = 'http://localhost:8383/';
-        console.log(urlll)
+        // console.log(urlll)
         if (urlll == 'http://localhost:8383/student_index.html') {
             window.location = baseUrl;
         }
         let a_quiz = document.getElementById('a_quiz');
         let a_marks = document.getElementById('a_marks');
+        let timerr = document.getElementById('timer');
         let a_aboutme = document.getElementById('a_aboutme');
         let url_id = urlll.split('/')[4]
-            let url_password = urlll.split('/')[5]
-            // let idd = urlll.split('/')[6]
-            
+        let url_password = urlll.split('/')[5]
+        // let idd = urlll.split('/')[6]
+
         a_quiz.addEventListener('click', (e) => {
-                e.preventDefault();
-                window.location = baseUrl + 'student_index.html/' + url_id + '/' + url_password;
-            })
-            a_aboutme.addEventListener('click', (e) => {
-                e.preventDefault();
-                window.location = baseUrl + 'about_me.html';
-            })
-            a_marks.addEventListener('click', (e) => {
-                e.preventDefault();
-                window.location = baseUrl + 'show_answer.html/' + url_id + '/' + url_password;
-            })
+            e.preventDefault();
+            window.location = baseUrl + 'student_index.html/' + url_id + '/' + url_password;
+        })
+        a_aboutme.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'about_me.html';
+        })
+        a_marks.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location = baseUrl + 'show_answer.html/' + url_id + '/' + url_password;
+        })
         let arr, nameee, arrr;
 
 
@@ -235,7 +249,7 @@
 
         async function onll() {
 
-            const res = await fetch(baseUrl + 'questions'+'/'+url_id+'/'+url_password,
+            const res = await fetch(baseUrl + 'questions' + '/' + url_id + '/' + url_password,
                 {
                     method: 'GET'
                 });
@@ -257,7 +271,23 @@
             // console.log(arr)
             // console.log(nameee)
             // console.log(JSON.parse(arr).name)
+            let timerz = 0;
+            for (let j = 0; j < arr.length; j++) {
+                for (let i = 0; i < arr[j].length; i++) {
+                    timerz += 60;
+                }
+            }
+            // console.log(timerz)
 
+            const time = setInterval(() => {
+                timerz--;
+                timerr.innerHTML = "TICK-TOK : - " + timerz;
+                // console.log(timer)
+                if (timerz == 0) {
+                    clearInterval(time)
+                    final_submit.click();
+                }
+            }, 1000);
             us();
         }
         onll();
@@ -269,32 +299,134 @@
         let final_submit = document.getElementById("final_submit")
         let reset = document.getElementById("reset")
         let root = document.getElementById("root")
+        let next = document.getElementById("next")
         // console.log(root)
         let ele;
+        let y = 0, x = 0, z;
         let data = new Array;
+
+
         function us() {
+
+            // console.log(timer)
+
+
+            // questionsss=data[0][0][0]
+
+            // let allQuestions=new Array
+            // allQuestions.push(questionsss)
+            // console.log(allQuestions)
 
 
             // console.log(arr .length)
+            let addhtml = new String;
             for (let j = 0; j < arr.length; j++) {
-                root.innerHTML += `<div class="COindicator">for CO-${j + 1}</div>`
+                addhtml += `<div class="COindicator" id="CO-${j + 1}">for CO-${j + 1}
+`
 
                 for (let i = 0; i < arr[j].length; i++) {
-                    root.innerHTML += `<div class="loadquestion" id="Question-${j + 1}-${i + 1}">
-        Question ${i + 1}:- ${arr[j][i][0]}
-        <br>`
+                    addhtml += `
+                    <div class="loadquestion" id="Question-${j + 1}-${i + 1}">
+        Question ${i + 1}:- ${arr[j][i][0]}`
                     for (let x = 1; x < arr[j][i].length; x++) {
-                        root.innerHTML += `<div class="options"><input type="radio" id="${j + 1}-${i + 1}-${x + 1}" name="${j + 1}-${i + 1}" value="${arr[j][i][x]}">
-        <label for="${j + 1}-${i + 1}-${x + 1}">${arr[j][i][x]}</label></div></div>`
+                        addhtml += `<div class="options">
+                            <input type="radio" id="${j + 1}-${i + 1}-${x + 1}" name="${j + 1}-${i + 1}" value="${arr[j][i][x]}">
+                            <label for="${j + 1}-${i + 1}-${x + 1}">${arr[j][i][x]}</label>
+                            </div>`
 
 
                     }
+                    addhtml += '</div>'
 
+                }
 
-                } root.innerHTML += `<hr>`
+                addhtml += `
+                </div><hr>
+`
             }
-            final_submit.addEventListener("click", postInfo)
+            console.log(addhtml)
+            root.innerHTML += addhtml
 
+            next.click();
+            next.addEventListener('click',(e)=>{
+
+                e.preventDefault();
+
+                
+                if(x==0){
+                    let COO=document.getElementById(`CO-${y+1}`)
+                    COO.style.display='block'
+                }
+                let questionnn=document.getElementById(`Question-${y+1}-${x+1}`)
+                questionnn.style.display='block'
+
+                if(y!=0){
+                let COOd=document.getElementById(`CO-${y}`)
+                    COOd.style.display='none'}
+                if(x==arr[y].length-1){
+
+                }
+                if(x==arr[y].length-1){
+                    x=0        
+                    y++
+                    if(y>arr.length-1){
+                        next.style.display='none'
+                    }
+                }
+                else{
+                    x++
+                }
+            
+            }
+            
+            
+            )
+
+
+
+            //         next.addEventListener('click',(e)=>{
+            //             // e.preventDefault()
+            //             // for (let y = 0; y < arr.length; y++) {
+            //             //     for (let x = 0; x < arr[y].length; x++) {
+            //             //         for (let z = 1; z < arr[y][x].length; z++) {
+
+
+            //                 if(y<arr.length &&z<arr[y][x].length){
+            //                 root.innerHTML += `<div class="COindicator">for CO-${y + 1}</div>`
+            // if(x<arr[y].length){
+            //                     root.innerHTML += `<div class="loadquestion" id="Question-${y + 1}-${x + 1}">
+            //         Question ${x + 1}:- ${arr[y][x][0]}
+            //         <br>`
+            //         if(z<arr[y][x].length){
+            //                         root.innerHTML += `<div class="options"><input type="radio" id="${y + 1}-${x + 1}-${z + 1}" name="${y + 1}-${x + 1}" value="${arr[y][x][z]}">
+            //         <label for="${y + 1}-${x + 1}-${z + 1}">${arr[y][x][z]}</label></div></div>`
+            //                         }
+
+            //                     // }
+
+            //                         }
+            //                 // } 
+
+            //                 root.innerHTML += `<hr>`
+            //             // }
+            //                         }
+            //                         if(x==arr[y][x]-1){
+            //                             x=0;
+            //                         }
+            //                         if(z==arr[y][x].length-1){
+            //                             z=0;
+            //                         }
+
+
+
+            //                 x++,y++,z++
+            //         })
+
+
+
+
+
+            final_submit.addEventListener("click", postInfo)
             async function postInfo(e) {
                 e.preventDefault();
                 for (let j = 0; j < arr.length; j++) {
@@ -317,6 +449,9 @@
                         body: JSON.stringify({ parcel: data, parcel_name: nameee, })
 
                     });
+                alert('Quiz is Submitted')
+                let body = document.getElementsByTagName('body')[0]
+                body.style.fdisplay = 'none'
             }
 
 
