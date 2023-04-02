@@ -1,9 +1,7 @@
 const bodyParser = require('body-parser')
-// const fs = require('fs')
 const baseUrl = 'http://localhost:8383/';
 const mongoose = require('mongoose');
 const path = require('path');
-// // const ass = require('./mongo') 
 main().catch(err => console.log(err));
 let kittySchema, Kitten;
 let questionSchema, questionmodel;
@@ -54,7 +52,6 @@ async function kittenupdate(parcel,parcel_id,parcel_password) {
     let newvalues = { $set: { arrayy: parcel } };
     let infoo = await Kitten.updateOne({ name: "info",id:parcel_id }, newvalues);
     if(infoo.matchedCount==0){
-        // let slience = new questionmodel({name:'questions'})
     let silence = new Kitten({ name: 'info',arrayy:parcel,id:parcel_id});
     await silence.save();
     }
@@ -324,6 +321,7 @@ app.get('/student_answer/:id/:password', async (req, res) => {
 // app.
 app.post('/login', async (req, res) => {
     const { parcel, parcel_password } = req.body;
+    console.log(parcel,parcel_password)
     let nexturl = await authenticate(parcel, parcel_password)
 
     if (!parcel) {
@@ -361,8 +359,8 @@ app.post('/indexxx', async (req, res) => {
 app.post('/signup', async (req, res) => {
     const { parcel,parcel_name } = req.body;
     // console.log(parcel_id)
-    console.log(parcel)
-    let a = new loginmodel({login_id:parcel,login_password:parcel_name});
+    console.log(parcel,parcel_name)
+    let a = new loginmodel({login_id:parcel,login_password:parcel_name,page:'student',name:'login'});
     await a.save()
     
     res.status(200).send({ status: 'recieved' })
@@ -377,9 +375,6 @@ app.post('/answerrr', async (req, res) => {
     if (v == 'student') {
         idd=await getidd(parcel_name[0],parcel_name[1]);
         ANSWERRR = await answerinfo(idd);
-        // console.log(ANSWERRR)
-        // ANSWERRR = ANSWERRR.answer;
-        // console.log(ANSWERRR)
         for (let j = 0; j < ANSWERRR.length; j++) {
             count[j] = 0;
             for (let i = 0; i < ANSWERRR[j].length; i++) {

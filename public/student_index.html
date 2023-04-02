@@ -382,54 +382,12 @@
             
             
             )
-
-
-
-            //         next.addEventListener('click',(e)=>{
-            //             // e.preventDefault()
-            //             // for (let y = 0; y < arr.length; y++) {
-            //             //     for (let x = 0; x < arr[y].length; x++) {
-            //             //         for (let z = 1; z < arr[y][x].length; z++) {
-
-
-            //                 if(y<arr.length &&z<arr[y][x].length){
-            //                 root.innerHTML += `<div class="COindicator">for CO-${y + 1}</div>`
-            // if(x<arr[y].length){
-            //                     root.innerHTML += `<div class="loadquestion" id="Question-${y + 1}-${x + 1}">
-            //         Question ${x + 1}:- ${arr[y][x][0]}
-            //         <br>`
-            //         if(z<arr[y][x].length){
-            //                         root.innerHTML += `<div class="options"><input type="radio" id="${y + 1}-${x + 1}-${z + 1}" name="${y + 1}-${x + 1}" value="${arr[y][x][z]}">
-            //         <label for="${y + 1}-${x + 1}-${z + 1}">${arr[y][x][z]}</label></div></div>`
-            //                         }
-
-            //                     // }
-
-            //                         }
-            //                 // } 
-
-            //                 root.innerHTML += `<hr>`
-            //             // }
-            //                         }
-            //                         if(x==arr[y][x]-1){
-            //                             x=0;
-            //                         }
-            //                         if(z==arr[y][x].length-1){
-            //                             z=0;
-            //                         }
-
-
-
-            //                 x++,y++,z++
-            //         })
-
-
-
-
-
             final_submit.addEventListener("click", postInfo)
             async function postInfo(e) {
+
                 e.preventDefault();
+                let COOd=document.getElementById(`CO-${y}`)
+                    COOd.style.display='none';
                 for (let j = 0; j < arr.length; j++) {
                     data[j] = new Array;
                     for (let x = 0; x < arr[j].length; x++) {
@@ -450,9 +408,10 @@
                         body: JSON.stringify({ parcel: data, parcel_name: nameee, })
 
                     });
-                alert('Quiz is Submitted')
                 let body = document.getElementsByTagName('body')[0]
                 body.style.fdisplay = 'none'
+                
+                alert('Quiz is Submitted')
             }
 
 
